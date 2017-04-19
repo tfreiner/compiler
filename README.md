@@ -1,6 +1,8 @@
 # compiler
 
-_Simple c compiler that translates source code for a language (defined below) into an executable._
+Simple c compiler that translates source code for a language (defined below) into an executable.  
+
+_note: project is still in progress_
 
 ## Language (in BNF)
 
@@ -22,3 +24,9 @@ _Simple c compiler that translates source code for a language (defined below) in
 `<loop>`     ->  `FOR ( <expr> <RO> <expr> ) <block>`  
 `<assign>`   ->  `Identifier = <expr>` 
 `<RO>`       ->  `>=> | <=< | >=>  = |  <=<  = | ! !  |  = =`
+
+## Invocation
+
+The compiler is invoked as:  
+'./testSem [file]' where file is entered without the extension.  The extension must be 4280E02.  
+testSem is the executable produced by the makefile.  
