@@ -2,7 +2,7 @@
 
 *Simple Compiler that translates source code for language defined below into an executable
 
-##Language (in BNF)
+## Language (in BNF)
 
 <program>  ->  <vars> <block>
 <block>    ->  BEGIN <vars> : <stats> END
