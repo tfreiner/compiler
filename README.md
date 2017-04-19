@@ -1,6 +1,6 @@
 # compiler
 
-_Simple Compiler that translates source code for language defined below into an executable_
+_Simple compiler that translates source code for aclanguage (defined below) into an executable._
 
 ## Language (in BNF)
 
