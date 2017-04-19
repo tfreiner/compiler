@@ -28,5 +28,5 @@ _note: project is still in progress_
 ## Invocation
 
 The compiler is invoked as:  
-'./testSem [file]' where file is entered without the extension.  The extension must be 4280E02.  
+`> testSem [file]` where 'file' is entered without the extension.  The extension must be 4280E02.  
 testSem is the executable produced by the makefile.  
