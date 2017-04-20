@@ -1,6 +1,6 @@
 # compiler
 
-Simple c compiler that translates source code for a language (defined below) into an executable.  
+Simple c compiler that translates source code for a language (defined below) into a .asm file.  
 
 _note: project is still in progress_
 
