@@ -1,6 +1,12 @@
 VOID x y z
-BEGIN:
+BEGIN
 
-INPUT hey:
+VOID x hello      a:
+
+INPUT hello:
+
+OUTPUT a:
+
+h = 5:
 
 END

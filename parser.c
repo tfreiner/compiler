@@ -38,7 +38,7 @@ node_t* parser(FILE* file){
 	root = program(&token, file);
 	if(token.tokenID == EOF_tk){
 		printf("Parse successful.\n");
-		printParseTree(root, 0);
+//		printParseTree(root, 0);
 	}
 	else{
 		error(0, &token);
@@ -393,7 +393,6 @@ static node_t* assign(token_t *token, FILE* file){
 		node->token1 = getToken(token);
 		*token = scanner(file);
 		if(token->tokenID == EQ_tk){
-			node->token2 = getToken(token);
 			*token = scanner(file);
 			node->child1 = expr(token, file);
 			return node;
@@ -410,7 +409,7 @@ static node_t* assign(token_t *token, FILE* file){
 }
 
 static node_t* RO(token_t *token, FILE* file){
-	node_t *node = getNode("R0");
+	node_t *node = getNode("RO");
 	if(token->tokenID == GREQGR_tk){
 		node->token1 = getToken(token);
 		*token = scanner(file);
