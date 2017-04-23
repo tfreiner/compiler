@@ -33,5 +33,6 @@ The compiler can be invoked in 3 ways:
   3) `> testSem` which will read input from the keyboard until EOF is simulated.  
      To simulate EOF, press enter and then Ctrl-D (on Mac/Linux) or Ctrl-Z (on Windows).  
      
-Notes: testSem is the executable produced by the makefile.  
-       The file extensions must be .4280E02.
+Notes:
+* testSem is the executable produced by the makefile.  
+* The file extensions must be .4280E02.
