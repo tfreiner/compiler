@@ -27,10 +27,11 @@ _note: project is still in progress_
 
 ## Invocation
 
-The compiler can be invocted in 3 ways:
-  1) `> testSem [file]` where 'file' is entered WITHOUT the extension.  The extension must be .4280E02.  
-  2) `> testSem < [file]` where 'file' is the entered WITH the extension.  The extension must be .4280E02.  
+The compiler can be invoked in 3 ways:
+  1) `> testSem [file]` where 'file' is entered WITHOUT the extension.  
+  2) `> testSem < [file]` where 'file' is the entered WITH the extension.  
   3) `> testSem` which will read input from the keyboard until EOF is simulated.  
-     To simulate EOF, press enter and then Ctrl-D (on Mac/Linux) or Ctrl-Z (on Windows)  
+     To simulate EOF, press enter and then Ctrl-D (on Mac/Linux) or Ctrl-Z (on Windows).  
      
 Note: testSem is the executable produced by the makefile.
+      The file extensions must be .4280E02.
