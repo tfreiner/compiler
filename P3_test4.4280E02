@@ -1,7 +1,7 @@
 VOID x y z
 BEGIN
 
-VOID x hello      a:
+VOID x hello a:
 
 INPUT hello:
 

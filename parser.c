@@ -62,15 +62,12 @@ static node_t* program(token_t *token, FILE* file){
 static node_t* block(token_t *token, FILE* file){
 	if(token->tokenID == KW_tk && strcmp(token->tokenInstance, "BEGIN") == 0){
 		node_t *node = getNode("block");
-//		node->token1 = getToken(token);
 		*token = scanner(file);
 		node->child1 = vars(token, file);
 		if(token->tokenID == COL_tk){
-//			node->token2 = getToken(token);
 			*token = scanner(file);
 			node->child2 = stats(token, file);
 			if(token->tokenID == KW_tk && strcmp(token->tokenInstance, "END") == 0){
-//				node->token3 = getToken(token);
 				*token = scanner(file);
 				return node;
 			}
@@ -80,7 +77,7 @@ static node_t* block(token_t *token, FILE* file){
 			}
 		}
 		else{
-			error(-1, token);
+			error(5, token);
 			return NULL;
 		}
 	}
@@ -93,7 +90,6 @@ static node_t* block(token_t *token, FILE* file){
 static node_t* vars(token_t *token, FILE* file){
 	if(token->tokenID == KW_tk && strcmp(token->tokenInstance, "VOID") == 0){
 		node_t *node = getNode("vars");
-//		node->token1 = getToken(token);
 		*token = scanner(file);
 		if(token->tokenID == ID_tk){
 			node->token1 = getToken(token);
@@ -103,7 +99,7 @@ static node_t* vars(token_t *token, FILE* file){
 		}
 		else{
 			error(3, token);
-			return NULL;//added
+			return NULL;
 		}
 	}
 	else
@@ -168,7 +164,6 @@ static node_t* T(token_t *token, FILE* file){
 		return node;	
 }
 
-//check
 static node_t* F(token_t *token, FILE* file){
 	node_t *node = getNode("F");
 	if(token->tokenID == MIN_tk){
@@ -186,11 +181,9 @@ static node_t* F(token_t *token, FILE* file){
 static node_t* R(token_t *token, FILE* file){
 	if(token->tokenID == OPENPAR_tk){
 		node_t *node = getNode("R");
-	//	node->token1 = getToken(token);
 		*token = scanner(file);
 		node->child1 = expr(token, file);
 		if(token->tokenID == CLOSEDPAR_tk){
-	//		node->token2 = getToken(token);
 			*token = scanner(file);
 			return node;
 		}
@@ -221,7 +214,6 @@ static node_t* stats(token_t *token, FILE* file){
 	node_t *node = getNode("stats");
 	node->child1 = stat(token, file);
 	if(token->tokenID == COL_tk){
-//		node->token1 = getToken(token);
 		*token = scanner(file);
 		node->child2 = mStat(token, file);
 		return node;
@@ -232,13 +224,11 @@ static node_t* stats(token_t *token, FILE* file){
 	}
 }
 
-//check
 static node_t* mStat(token_t *token, FILE* file){
-	if((token->tokenID == KW_tk && strcmp(token->tokenInstance, "INPUT") == 0) || (token->tokenID == KW_tk && strcmp(token->tokenInstance, "OUTPUT") == 0) || (token->tokenID == KW_tk && strcmp(token->tokenInstance, "IF") == 0) || (token->tokenID == KW_tk && strcmp(token->tokenInstance, "FOR") == 0) || (token->tokenID == ID_tk)){
+	if((token->tokenID == KW_tk && strcmp(token->tokenInstance, "INPUT") == 0) || (token->tokenID == KW_tk && strcmp(token->tokenInstance, "OUTPUT") == 0) || (token->tokenID == KW_tk && strcmp(token->tokenInstance, "BEGIN") == 0) || (token->tokenID == KW_tk && strcmp(token->tokenInstance, "IF") == 0) || (token->tokenID == KW_tk && strcmp(token->tokenInstance, "FOR") == 0) || (token->tokenID == ID_tk)){
 		node_t *node = getNode("mStat");
 		node->child1 = stat(token, file);
 		if(token->tokenID == COL_tk){
-//			node->token1 = getToken(token);
 			*token = scanner(file);
 			node->child2 = mStat(token, file);
 			return node;
@@ -253,7 +243,6 @@ static node_t* mStat(token_t *token, FILE* file){
 	
 }
 
-//check
 static node_t* stat(token_t *token, FILE* file){
 	node_t *node = getNode("stat");
 	if(token->tokenID == KW_tk && strcmp(token->tokenInstance, "INPUT") == 0){
@@ -289,7 +278,6 @@ static node_t* stat(token_t *token, FILE* file){
 static node_t* in(token_t *token, FILE* file){
 	if(token->tokenID == KW_tk && strcmp(token->tokenInstance, "INPUT") == 0){
 		node_t *node = getNode("in");
-//		node->token1 = getToken(token);
 		*token = scanner(file);
 		if(token->tokenID == ID_tk){
 			node->token1 = getToken(token);
@@ -310,7 +298,6 @@ static node_t* in(token_t *token, FILE* file){
 static node_t* out(token_t *token, FILE* file){
 	if(token->tokenID == KW_tk && strcmp(token->tokenInstance, "OUTPUT") == 0){
 		node_t *node = getNode("out");
-//		node->token1 = getToken(token);
 		*token = scanner(file);
 		node->child1 = expr(token, file);
 		return node;
@@ -324,16 +311,13 @@ static node_t* out(token_t *token, FILE* file){
 static node_t* iff(token_t *token, FILE* file){
 	if(token->tokenID == KW_tk && strcmp(token->tokenInstance, "IF") == 0){
 		node_t *node = getNode("if");
-//		node->token1 = getToken(token);
 		*token = scanner(file);
 		if(token->tokenID == OPENPAR_tk){
-//			node->token2 = getToken(token);
 			*token = scanner(file);
 			node->child1 = expr(token, file);
 			node->child2 = RO(token, file);
 			node->child3 = expr(token, file);
 			if(token->tokenID == CLOSEDPAR_tk){
-	//			node->token3 = getToken(token);
 				*token = scanner(file);
 				node->child4 = block(token, file);
 				return node;
@@ -357,16 +341,13 @@ static node_t* iff(token_t *token, FILE* file){
 static node_t* loop(token_t *token, FILE* file){
 	if(token->tokenID == KW_tk && strcmp(token->tokenInstance, "FOR") == 0){
 		node_t *node = getNode("loop");
-//		node->token1 = getToken(token);
 		*token = scanner(file);
 		if(token->tokenID == OPENPAR_tk){
-//			node->token2 = getToken(token);
 			*token = scanner(file);
 			node->child1 = expr(token, file);
 			node->child2 = RO(token, file);
 			node->child3 = expr(token, file);
 			if(token->tokenID == CLOSEDPAR_tk){
-//				node->token3 = getToken(token);
 				*token = scanner(file);
 				node->child4 = block(token, file);
 				return node;
@@ -459,9 +440,6 @@ static node_t* RO(token_t *token, FILE* file){
 //Prints the errors based on the errorNumber that is passed to the function.
 static void error(int errorNumber, token_t *token){
 	switch (errorNumber){
-		case -1:
-			printf("%s%s%s%d\n", "Error: expected :, received ", token->tokenInstance, " on line number: ", token->lineNumber);
-			exit(0);
 		case 0:
 			printf("%s\n", "ERRORS");
 			exit(0);

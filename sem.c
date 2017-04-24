@@ -19,8 +19,9 @@ void sem(node_t* node){
 	localStack_t stack;
 	stack.top = -1;
 	globalStack_t global;
-	global.top = -1;	
+	global.top = 0;	
 	traverse(&stack, &global, node);
+	printf("Semantic analysis successful\n.");
 }
 
 static void push(localStack_t* stack, char* token){
@@ -120,7 +121,7 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node){
 		}
 	}
 	else if(strcmp(node->label, "expr") == 0){
-		printf("MVARS\n");
+		printf("EXPR\n");
 		traverse(stack, global, node->child1);
 		traverse(stack, global, node->child2);
 	}
@@ -144,9 +145,9 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node){
 			if(node->token1->tokenID == ID_tk){
 				tokenLevel = find(stack, node->token1->tokenInstance);
 				if(tokenLevel == -1){
-					printf("NOT FOUND\n");
-					if(verify(global, node->token1->tokenInstance))
+					if(verify(global, node->token1->tokenInstance)){
 						error(2, node->token1);
+					}
 				}	
 			}
 			else{
