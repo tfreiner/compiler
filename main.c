@@ -7,7 +7,10 @@
 #include "scanner.h"
 #include "parser.h"
 #include "sem.h"
+<<<<<<< HEAD
 #include "codegen.h"
+=======
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 
 /*
 Main sets the file invocations.
@@ -33,7 +36,10 @@ int main(int argc, char *argv[])
 		}
 		root = parser(file);
 		sem(root);
+<<<<<<< HEAD
 		codegen(root);
+=======
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		fclose(file);
 
 	}
@@ -55,7 +61,10 @@ int main(int argc, char *argv[])
 		rewind(file2);
 		root = parser(file2);
 		sem(root);
+<<<<<<< HEAD
 		codegen(root);
+=======
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		fclose(file2);	
 	}
 	else{

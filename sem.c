@@ -21,7 +21,11 @@ void sem(node_t* node){
 	globalStack_t global;
 	global.top = 0;	
 	traverse(&stack, &global, node);
+<<<<<<< HEAD
 	printf("Semantic analysis successful.\n");
+=======
+	printf("Semantic analysis successful\n.");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 }
 
 static void push(localStack_t* stack, char* token){
@@ -61,10 +65,18 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node){
 	if(node == NULL)
 		return;
 	if(strcmp(node->label, "program") == 0){
+<<<<<<< HEAD
+=======
+		printf("PROGRAM\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		traverse(stack, global, node->child1);
 		traverse(stack, global, node->child2);		
 	}
 	else if(strcmp(node->label, "block") == 0){
+<<<<<<< HEAD
+=======
+		printf("BLOCK\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		varCount = 0;
 		traverse(stack, global, node->child1);
 		traverse(stack, global, node->child2);
@@ -73,6 +85,10 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node){
 		}
 	}
 	else if(strcmp(node->label, "vars") == 0){
+<<<<<<< HEAD
+=======
+		printf("VARS\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		if(outerVar == 0){
 			if(verify(global, node->token1->tokenInstance)){
 				insert(global, node->token1->tokenInstance);
@@ -95,6 +111,10 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node){
 		}
 	}
 	else if(strcmp(node->label, "mvars") == 0){
+<<<<<<< HEAD
+=======
+		printf("MVARS\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		if(outerVar == 0){
 			if(verify(global, node->token1->tokenInstance)){
 				insert(global, node->token1->tokenInstance);
@@ -117,21 +137,41 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node){
 		}
 	}
 	else if(strcmp(node->label, "expr") == 0){
+<<<<<<< HEAD
+=======
+		printf("EXPR\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		traverse(stack, global, node->child1);
 		traverse(stack, global, node->child2);
 	}
 	else if(strcmp(node->label, "M") == 0){
+<<<<<<< HEAD
+=======
+		printf("M\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		traverse(stack, global, node->child1);
 		traverse(stack, global, node->child2);
 	}
 	else if(strcmp(node->label, "T") == 0){
+<<<<<<< HEAD
+=======
+		printf("T\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		traverse(stack, global, node->child1);
 		traverse(stack, global, node->child2);
 	}
 	else if(strcmp(node->label, "F") == 0){
+<<<<<<< HEAD
 		 traverse(stack, global, node->child1);
 	}
 	else if(strcmp(node->label, "R") == 0){
+=======
+		printf("F\n");
+		 traverse(stack, global, node->child1);
+	}
+	else if(strcmp(node->label, "R") == 0){
+		printf("R\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		if(node->child1 == NULL){
 			if(node->token1->tokenID == ID_tk){
 				tokenLevel = find(stack, node->token1->tokenInstance);
@@ -142,6 +182,10 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node){
 				}	
 			}
 			else{
+<<<<<<< HEAD
+=======
+				//need this for code gen...
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 			}
 		}
 		else{
@@ -149,47 +193,89 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node){
 		}
 	}
 	else if(strcmp(node->label, "stats") == 0){
+<<<<<<< HEAD
+=======
+		printf("STATS\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		traverse(stack, global, node->child1);
 		traverse(stack, global, node->child2);
 	}
 	else if(strcmp(node->label, "mStat") == 0){
+<<<<<<< HEAD
+=======
+		printf("MSTAT\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		traverse(stack, global, node->child1);
 		traverse(stack, global, node->child2);
 	}
 	else if(strcmp(node->label, "stat") == 0){
+<<<<<<< HEAD
 		traverse(stack, global, node->child1);
 	}
 	else if(strcmp(node->label, "in") == 0){
 		tokenLevel = find(stack, node->token1->tokenInstance);
 		if(tokenLevel == -1){
+=======
+		printf("STAT\n");
+		traverse(stack, global, node->child1);
+	}
+	else if(strcmp(node->label, "in") == 0){
+		printf("IN\n");
+		tokenLevel = find(stack, node->token1->tokenInstance);
+		if(tokenLevel == -1){
+			printf("NOT FOUND\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 			if(verify(global, node->token1->tokenInstance))
 				error(2, node->token1);
 		}
 	}
 	else if(strcmp(node->label, "out") == 0){
+<<<<<<< HEAD
 		traverse(stack, global, node->child1);
 	}
 	else if(strcmp(node->label, "if") == 0){
+=======
+		printf("OUT\n");
+		traverse(stack, global, node->child1);
+	}
+	else if(strcmp(node->label, "if") == 0){
+		printf("IF\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		traverse(stack, global, node->child1);
 		traverse(stack, global, node->child2);
 		traverse(stack, global, node->child3);
 		traverse(stack, global, node->child4);
 	}
 	else if(strcmp(node->label, "loop") == 0){
+<<<<<<< HEAD
+=======
+		printf("LOOP\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 		traverse(stack, global, node->child1);
 		traverse(stack, global, node->child2);
 		traverse(stack, global, node->child3);
 		traverse(stack, global, node->child4);
 	}
 	else if(strcmp(node->label, "assign") == 0){
+<<<<<<< HEAD
 		tokenLevel = find(stack, node->token1->tokenInstance);
 		if(tokenLevel == -1){
+=======
+		printf("ASSIGN\n");
+		tokenLevel = find(stack, node->token1->tokenInstance);
+		if(tokenLevel == -1){
+			printf("NOT FOUND\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 			if(verify(global, node->token1->tokenInstance))
 				error(2, node->token1);
 		}
 		traverse(stack, global, node->child1);
 	}
 	else if(strcmp(node->label, "RO") == 0){
+<<<<<<< HEAD
+=======
+		printf("RO\n");
+>>>>>>> 496985f37ddb9478c37c698c63b65ff671152707
 	}
 	
 }
