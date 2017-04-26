@@ -7,14 +7,8 @@
 static int labelCount = 0;
 static int varCount = 0;
 static char name[20];
-static char label[20];
-static char *newName(int choice){
-	if (choice==1)
-		sprintf(name,"V%d", varCount++);
-	else
-		sprintf(name,"L%d", labelCount++);
-	return(name);
-}
+
+static char *newName(int);
 
 static void generate(node_t*, FILE*);
 
@@ -40,6 +34,8 @@ void codegen(node_t *node){
 
 static void generate(node_t *node, FILE *out){
 	char var[20];
+	char label[20];
+
 	if(node == NULL)
 		return;
 	else if(strcmp(node->label, "program") == 0){
@@ -158,16 +154,20 @@ static void generate(node_t *node, FILE *out){
 		generate(node->child1, out);
 		fprintf(out, "SUB\t%s\n", var);
 		strcpy(label, newName(0));
-		if(node->child2->token1->tokenID == GREQGR_tk && node->child2->token2 == NULL)
-			fprintf(out, "BRPOS\t%s\n", label);
-		else if(node->child2->token1->tokenID == LSEQLS_tk && node->child2->token2 == NULL)
+		if(node->child2->token1->tokenID == GREQGR_tk && node->child2->token2 == NULL){
 			fprintf(out, "BRNEG\t%s\n", label);
+			fprintf(out, "BRZERO\t%s\n", label);
+		}
+		else if(node->child2->token1->tokenID == LSEQLS_tk && node->child2->token2 == NULL){
+			fprintf(out, "BRPOS\t%s\n", label);
+			fprintf(out, "BRZERO\t%s\n", label);
+		}
 		else if(node->child2->token1->tokenID == LSEQLS_tk && node->child2->token2->tokenID == EQ_tk)
-			fprintf(out, "BRZNEG\t%s\n", label);
+			fprintf(out, "BRPOS\t%s\n", label);
 		else if(node->child2->token1->tokenID == GREQGR_tk && node->child2->token2->tokenID == EQ_tk)
-			fprintf(out, "BRZPOS\t%s\n", label);
+			fprintf(out, "BRNEG\t%s\n", label);
 		else if(node->child2->token1->tokenID == EQ_tk)
-			fprintf(out, "BRNZERO\t%s\n", label);
+			fprintf(out, "BRNONZ\t%s\n", label);  //or BRNZERO???
 		else if(node->child2->token1->tokenID == NOT_tk)
 			fprintf(out, "BRZERO\t%s\n", label);
 		generate(node->child4, out);
@@ -178,4 +178,12 @@ static void generate(node_t *node, FILE *out){
 		generate(node->child1, out);
 		fprintf(out, "STORE\t%s\n", node->token1->tokenInstance);
 	}
+}
+
+static char *newName(int choice){
+	if (choice==1)
+		sprintf(name,"V%d", varCount++);
+	else    
+		sprintf(name,"L%d", labelCount++);
+	return(name);
 }
