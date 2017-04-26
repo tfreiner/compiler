@@ -1,5 +1,0 @@
-VOID x y
-BEGIN
-  VOID a :
-  OUTPUT a + x + y :
-END
