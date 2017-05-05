@@ -1,7 +1,7 @@
 VOID x
 BEGIN:
 	INPUT x:
-	IF(x >=> 0)
+	IF(x >=> = 0)
 		BEGIN:
 			OUTPUT x:
 		END:

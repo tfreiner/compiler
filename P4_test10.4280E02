@@ -9,6 +9,6 @@ BEGIN:
 					OUTPUT y:
 					y = y - 1:
 				END:
-				x = x - 1:
+			x = x - 1:
 		END:
 END

@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 		}
 		root = parser(file);
 		sem(root);
-		codegen(root);
+//		codegen(root);
 		fclose(file);
 
 	}
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 		rewind(file2);
 		root = parser(file2);
 		sem(root);
-		codegen(root);
+//		codegen(root);
 		fclose(file2);	
 	}
 	else{
