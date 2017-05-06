@@ -3,12 +3,12 @@
 #include <stdio.h>
 
 typedef struct localStack_t{ 
-	char localStack[100][100];
+	char local[100][100];
 	int top;
 }localStack_t;
 
 typedef struct globalStack_t{
-	char globalStack[100][100];
+	char global[100][100];
 	int top;	
 }globalStack_t;
 

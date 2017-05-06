@@ -2,7 +2,7 @@ VOID x
 BEGIN:
 	INPUT x:
 	BEGIN
-		VOID x y z:
+		VOID x:
 		INPUT x:
 		BEGIN
 			VOID x:

@@ -38,7 +38,7 @@ node_t* parser(FILE* file){
 	root = program(&token, file);
 	if(token.tokenID == EOF_tk){
 		printf("Parse successful.\n");
-		printParseTree(root, 0);
+		//printParseTree(root, 0);
 	}
 	else{
 		error(0, &token);

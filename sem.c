@@ -1,3 +1,5 @@
+//CHECK 10
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -26,56 +28,54 @@ void sem(node_t* node){
 		printf("File cannot be opened, errno = %d\n", errno);
 		return;
 	}
-	localStack_t stack;
-	stack.top = -1;
-	globalStack_t global;
-	global.top = 0;	
-	traverse(&stack, &global, node, file);
+	localStack_t localStack;
+	localStack.top = -1;
+	globalStack_t globalStack;
+	globalStack.top = 0;	
+	traverse(&localStack, &globalStack, node, file);
 	printf("Semantic analysis successful.\n");
 	printf("Code generation successful.\n");
 	fprintf(file, "STOP\n");
-	for(int i = 0; i < global.top; i++)
-		fprintf(file, "%s\t%d\n", global.globalStack[i], 0);
+	for(int i = 0; i < globalStack.top; i++)
+		fprintf(file, "%s\t%d\n", globalStack.global[i], 0);
 	for(int i = 0; i < tempVarCount; i++)
 		fprintf(file, "V%d\t%d\n", i, 0);
 	fclose(file);
 }
 
-static void push(localStack_t* stack, char* token){
-	stack->top++;
-	strcpy(stack->localStack[stack->top], token);
+static void push(localStack_t* localStack, char* token){
+	localStack->top++;
+	strcpy(localStack->local[localStack->top], token);
 }
 
-static void pop(localStack_t* stack){
-	strcpy(stack->localStack[stack->top], "");
-	stack->top--;
+static void pop(localStack_t* localStack){
+	strcpy(localStack->local[localStack->top], "");
+	localStack->top--;
 }
 
-static int find(localStack_t* stack, char* token){
-	for(int i = stack->top; i > -1; i--){
-		if(strcmp(stack->localStack[i], token) == 0){
-			printf("i: %d top of stack: %d", i, stack->top);
-			printf("LOCAL STACK LOCATION for %s is : %d\n", token, (stack->top - i));
-			return (stack->top - i);
+static int find(localStack_t* localStack, char* token){
+	for(int i = localStack->top; i > -1; i--){
+		if(strcmp(localStack->local[i], token) == 0){
+			return (localStack->top - i);
 		}
 	}
 	return -1;		
 }
 
-static void insert(globalStack_t* global, char* token){
-	strcpy(global->globalStack[global->top], token);
-	global->top++;
+static void insert(globalStack_t* globalStack, char* token){
+	strcpy(globalStack->global[globalStack->top], token);
+	globalStack->top++;
 }
 
-static bool verify(globalStack_t* global, char* token){
-	for(int i = 0; i <= global->top; i++){
-		if(strcmp(global->globalStack[i], token) == 0)
+static bool verify(globalStack_t* globalStack, char* token){
+	for(int i = 0; i <= globalStack->top; i++){
+		if(strcmp(globalStack->global[i], token) == 0)
 			return false;
 	}
 	return true;
 }
 
-static void traverse(localStack_t* stack, globalStack_t* global, node_t* node, FILE* out){
+static void traverse(localStack_t* localStack, globalStack_t* globalStack, node_t* node, FILE* out){
 	char var[20];
 	char label[20];
 	char label2[20];
@@ -84,45 +84,41 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node, F
 	if(node == NULL)
 		return;
 	else if(strcmp(node->label, "program") == 0){
-		traverse(stack, global, node->child1, out);
-		traverse(stack, global, node->child2, out);		
+		traverse(localStack, globalStack, node->child1, out);
+		traverse(localStack, globalStack, node->child2, out);		
 	}
 	else if(strcmp(node->label, "block") == 0){
 		outerVar = 1;
 		int blockVarCount = varCount;
 		varCount = 0;
-		traverse(stack, global, node->child1, out);
-		traverse(stack, global, node->child2, out);
+		traverse(localStack, globalStack, node->child1, out);
+		traverse(localStack, globalStack, node->child2, out);
 		for(int i = 0; i < varCount; i++){
-			pop(stack);
+			pop(localStack);
 			fprintf(out, "POP\n");
 		}
 		varCount = blockVarCount;
 	}
 	else if(strcmp(node->label, "vars") == 0){
 		if(outerVar == 0){
-			if(verify(global, node->token1->tokenInstance)){
-				insert(global, node->token1->tokenInstance);
+			if(verify(globalStack, node->token1->tokenInstance)){
+				insert(globalStack, node->token1->tokenInstance);
 				//fprintf(out, "PUSH\n");//ADDEDD			
 				//strcpy(var, newName(1));
 				//fprintf(out, "STORE\t%s\n", var);
-				traverse(stack, global, node->child1, out);
+				traverse(localStack, globalStack, node->child1, out);
 				outerVar = 1;
 			}
 			else
 				error(1, node->token1);
 		}
 		else{
-			printf(" here %d\n", stack->top);
-			int stackLevel = find(stack, node->token1->tokenInstance);
-			printf("after find %d\n", stack->top);
+			int stackLevel = find(localStack, node->token1->tokenInstance);
 			if(stackLevel < varCount && stackLevel != -1){
 				error(1, node->token1);
 			}
 			else{
-				printf("PUSHING %s\n", node->token1->tokenInstance);
-				push(stack, node->token1->tokenInstance);
-				printf("tos %d\n", stack->top);
+				push(localStack, node->token1->tokenInstance);
 				fprintf(out, "PUSH\n");
 				//fprintf(out, "STACKW\t%d\n", stackLevel);
 				/*
@@ -132,66 +128,64 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node, F
 					fprintf(out, "STACKW\t%d\n", stackLevel);
 				*/
 				varCount++;
-				traverse(stack, global, node->child1, out);
+				traverse(localStack, globalStack, node->child1, out);
 			}
 		}
 	}
 	else if(strcmp(node->label, "mvars") == 0){
 		if(outerVar == 0){
-			if(verify(global, node->token1->tokenInstance)){
-				insert(global, node->token1->tokenInstance);
-				traverse(stack, global, node->child1, out);
+			if(verify(globalStack, node->token1->tokenInstance)){
+				insert(globalStack, node->token1->tokenInstance);
+				traverse(localStack, globalStack, node->child1, out);
 			}
 			else{
 				error(1, node->token1);
 			}
 		}
 		else{
-			tokenLevel = find(stack, node->token1->tokenInstance);
+			tokenLevel = find(localStack, node->token1->tokenInstance);
 			if(tokenLevel < varCount && tokenLevel != -1){
 				error(1, node->token1);		
 			}
 			else{
-				printf("PUSHING %s\n", node->token1->tokenInstance);
-				push(stack, node->token1->tokenInstance);
-				printf("tos %d\n", stack->top);
+				push(localStack, node->token1->tokenInstance);
 				fprintf(out, "PUSH\n");
 				//fprintf(out, "STACKW\t%d\n", tokenLevel);
 				varCount++;
-				traverse(stack, global, node->child1, out);
+				traverse(localStack, globalStack, node->child1, out);
 			}
 		}
 	}
 	else if(strcmp(node->label, "expr") == 0){
 		if(node->token1 == NULL)
-			traverse(stack, global, node->child1, out);
+			traverse(localStack, globalStack, node->child1, out);
 		else{
-			traverse(stack, global, node->child2, out);
+			traverse(localStack, globalStack, node->child2, out);
 			strcpy(var,newName(1));
 			fprintf(out, "STORE\t%s\n", var);
-			traverse(stack, global, node->child1, out);
+			traverse(localStack, globalStack, node->child1, out);
 			fprintf(out, "ADD\t%s\n", var);			
 		}
 	}
 	else if(strcmp(node->label, "M") == 0){
 		if(node->token1 == NULL)
-			traverse(stack, global, node->child1, out);
+			traverse(localStack, globalStack, node->child1, out);
 		else{
-			traverse(stack, global, node->child2, out);
+			traverse(localStack, globalStack, node->child2, out);
 			strcpy(var,newName(1));
 			fprintf(out, "STORE\t%s\n", var);
-			traverse(stack, global, node->child1, out);
+			traverse(localStack, globalStack, node->child1, out);
 			fprintf(out, "SUB\t%s\n", var);
 		}
 	}
 	else if(strcmp(node->label, "T") == 0){
 		if(node->token1 == NULL)
-			traverse(stack, global, node->child1, out);
+			traverse(localStack, globalStack, node->child1, out);
 		else{
-			traverse(stack, global, node->child2, out);
+			traverse(localStack, globalStack, node->child2, out);
 			strcpy(var, newName(1));
 			fprintf(out, "STORE\t%s\n", var);
-			traverse(stack, global, node->child1, out);
+			traverse(localStack, globalStack, node->child1, out);
 			if(strcmp(node->token1->tokenInstance, "*") == 0)
 				fprintf(out, "MULT\t%s\n", var);
 			else
@@ -200,18 +194,18 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node, F
 	}
 	else if(strcmp(node->label, "F") == 0){
 		if(node->token1 == NULL)
-			traverse(stack, global, node->child1, out);
+			traverse(localStack, globalStack, node->child1, out);
 		else{
-			traverse(stack, global, node->child1, out);
+			traverse(localStack, globalStack, node->child1, out);
 			fprintf(out, "MULT\t%d\n", -1);
 		}
 	}	
 	else if(strcmp(node->label, "R") == 0){
 		if(node->child1 == NULL){
 			if(node->token1->tokenID == ID_tk){
-				tokenLevel = find(stack, node->token1->tokenInstance);
+				tokenLevel = find(localStack, node->token1->tokenInstance);
 				if(tokenLevel == -1){
-					if(verify(global, node->token1->tokenInstance)){
+					if(verify(globalStack, node->token1->tokenInstance)){
 						error(2, node->token1);
 					}
 					fprintf(out, "LOAD\t%s\n", node->token1->tokenInstance);
@@ -228,24 +222,24 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node, F
 			}
 		}
 		else{
-			traverse(stack, global, node->child1, out);
+			traverse(localStack, globalStack, node->child1, out);
 		}
 	}
 	else if(strcmp(node->label, "stats") == 0){
-		traverse(stack, global, node->child1, out);
-		traverse(stack, global, node->child2, out);
+		traverse(localStack, globalStack, node->child1, out);
+		traverse(localStack, globalStack, node->child2, out);
 	}
 	else if(strcmp(node->label, "mStat") == 0){
-		traverse(stack, global, node->child1, out);
-		traverse(stack, global, node->child2, out);
+		traverse(localStack, globalStack, node->child1, out);
+		traverse(localStack, globalStack, node->child2, out);
 	}
 	else if(strcmp(node->label, "stat") == 0){
-		traverse(stack, global, node->child1, out);
+		traverse(localStack, globalStack, node->child1, out);
 	}
 	else if(strcmp(node->label, "in") == 0){
-		tokenLevel = find(stack, node->token1->tokenInstance);
+		tokenLevel = find(localStack, node->token1->tokenInstance);
 		if(tokenLevel == -1){
-			if(verify(global, node->token1->tokenInstance))
+			if(verify(globalStack, node->token1->tokenInstance))
 				error(2, node->token1);
 			else
 				fprintf(out, "READ\t%s\n", node->token1->tokenInstance);
@@ -258,16 +252,16 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node, F
 		}	
 	}
 	else if(strcmp(node->label, "out") == 0){
-		traverse(stack, global, node->child1, out);
+		traverse(localStack, globalStack, node->child1, out);
 		strcpy(var, newName(1));
 		fprintf(out, "STORE\t%s\n", var);
 		fprintf(out, "WRITE\t%s\n", var);
 	}
 	else if(strcmp(node->label, "if") == 0){
-		traverse(stack, global, node->child3, out);
+		traverse(localStack, globalStack, node->child3, out);
 		strcpy(var, newName(1));
 		fprintf(out, "STORE\t%s\n", var);
-		traverse(stack, global, node->child1, out);
+		traverse(localStack, globalStack, node->child1, out);
 		fprintf(out, "SUB\t%s\n", var);
 		strcpy(label, newName(0));
 		if(node->child2->token1->tokenID == GREQGR_tk && node->child2->token2 == NULL){
@@ -288,17 +282,17 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node, F
 		}
 		else if(node->child2->token1->tokenID == NOT_tk)
 			fprintf(out, "BRZERO\t%s\n", label);
-		traverse(stack, global, node->child4, out);
+		traverse(localStack, globalStack, node->child4, out);
 		fprintf(out, "\t%s:\tNOOP\n", label);
 	}
 	else if(strcmp(node->label, "loop") == 0){
 		strcpy(label, newName(0));
 		strcpy(label2, newName(0));
 		fprintf(out, "\t%s:\tNOOP\n", label);
-		traverse(stack, global, node->child3, out);	
+		traverse(localStack, globalStack, node->child3, out);	
 		strcpy(var, newName(1));
 		fprintf(out, "STORE\t%s\n", var);
-		traverse(stack, global, node->child1, out);
+		traverse(localStack, globalStack, node->child1, out);
 		fprintf(out, "SUB\t%s\n", var);
 		if(node->child2->token1->tokenID == GREQGR_tk && node->child2->token2 == NULL){
 			fprintf(out, "BRNEG\t%s\n", label2);
@@ -318,15 +312,15 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node, F
 		}
 		else if(node->child2->token1->tokenID == NOT_tk)
 			fprintf(out, "BRZERO\t%s\n", label2);
-		traverse(stack, global, node->child4, out);
+		traverse(localStack, globalStack, node->child4, out);
 		fprintf(out, "BR\t%s\n", label);
 		fprintf(out, "\t%s:\tNOOP\n", label2);
 	}
 	else if(strcmp(node->label, "assign") == 0){
-		traverse(stack, global, node->child1, out);
-		tokenLevel = find(stack, node->token1->tokenInstance);
+		traverse(localStack, globalStack, node->child1, out);
+		tokenLevel = find(localStack, node->token1->tokenInstance);
 		if(tokenLevel == -1){
-			if(verify(global, node->token1->tokenInstance))
+			if(verify(globalStack, node->token1->tokenInstance))
 				error(2, node->token1);
 			fprintf(out, "STORE\t%s\n", node->token1->tokenInstance);
 		}
@@ -338,13 +332,9 @@ static void traverse(localStack_t* stack, globalStack_t* global, node_t* node, F
 
 		}
 	}
-	else if(strcmp(node->label, "RO") == 0){
-	}
-	
 }
 
 static void error(int errorNumber, token_t* token){
-
 	switch (errorNumber){
 		case 0:
 			printf("%s%s%s%d\n", "ERROR variable already defined: ", token->tokenInstance, " on line number: ", token->lineNumber);
