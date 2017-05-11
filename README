@@ -1,0 +1,3 @@
+P1: TABLE DRIVEN SCANNER The table data is in the FADriver function in the scanner.c file.
+P3/P4: LOCAL OPTION
+The code gen output file is always project.asm.
