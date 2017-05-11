@@ -27,11 +27,7 @@ int main(int argc, char *argv[])
 
 		strcpy(outfile, argv[1]);
 			
-		printf("%s\n", outfile);
-
 		strcat(arg, ".4280E02");
-
-		printf("%s\n", outfile);
 
 		FILE *file = fopen(arg, "r");
 		if (file == NULL){
@@ -40,7 +36,6 @@ int main(int argc, char *argv[])
 		}
 		root = parser(file);
 		sem(root, outfile);
-//		codegen(root);
 		fclose(file);
 
 	}
@@ -62,7 +57,6 @@ int main(int argc, char *argv[])
 		rewind(file2);
 		root = parser(file2);
 		sem(root, "out");
-//		codegen(root);
 		fclose(file2);	
 	}
 	else{

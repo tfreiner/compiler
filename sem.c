@@ -9,6 +9,7 @@
 //SEMANTIC AND CODE GEN FUNCTIONS
 
 //static global variable declarations and function prototypes
+
 static int labelCount = 0;
 static char name[20];
 static char *newName(int);
@@ -59,6 +60,7 @@ static void push(localStack_t* localStack, char* token){
 	localStack->top++;
 	strcpy(localStack->local[localStack->top], token);
 }
+
 static void pop(localStack_t* localStack){
 	strcpy(localStack->local[localStack->top], "");
 	localStack->top--;
@@ -130,9 +132,6 @@ static void traverse(localStack_t* localStack, globalStack_t* globalStack, node_
 		if(outerVar == 0){
 			if(verify(globalStack, node->token1->tokenInstance)){
 				insert(globalStack, node->token1->tokenInstance);
-				//fprintf(out, "PUSH\n");//ADDEDD			
-				//strcpy(var, newName(1));
-				//fprintf(out, "STORE\t%s\n", var);
 				traverse(localStack, globalStack, node->child1, out);
 				outerVar = 1;
 			}
@@ -147,13 +146,6 @@ static void traverse(localStack_t* localStack, globalStack_t* globalStack, node_
 			else{
 				push(localStack, node->token1->tokenInstance);
 				fprintf(out, "PUSH\n");
-				//fprintf(out, "STACKW\t%d\n", stackLevel);
-				/*
-				if(stackLevel == -1)
-					fprintf(out, "STACKW\t%d\n", varCount);
-				else
-					fprintf(out, "STACKW\t%d\n", stackLevel);
-				*/
 				varCount++;
 				traverse(localStack, globalStack, node->child1, out);
 			}
@@ -177,7 +169,6 @@ static void traverse(localStack_t* localStack, globalStack_t* globalStack, node_
 			else{
 				push(localStack, node->token1->tokenInstance);
 				fprintf(out, "PUSH\n");
-				//fprintf(out, "STACKW\t%d\n", tokenLevel);
 				varCount++;
 				traverse(localStack, globalStack, node->child1, out);
 			}
@@ -239,7 +230,6 @@ static void traverse(localStack_t* localStack, globalStack_t* globalStack, node_
 				}
 				else if(tokenLevel > -1){
 					strcpy(var, newName(1));
-					//fprintf(out, "READ\t%s\n", var);
 					fprintf(out, "LOAD\t%s\n", var);
 					fprintf(out, "STACKR\t%d\n", tokenLevel);
 				}
