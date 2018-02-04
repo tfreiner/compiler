@@ -1,6 +1,6 @@
 # compiler
 
-Simple c compiler that translates source code for a language (defined below) into a .asm file.  
+C compiler that translates source code for a language (defined below) into a .asm file.  
 
 ## Language (in BNF)
 
@@ -29,7 +29,7 @@ Simple c compiler that translates source code for a language (defined below) int
 
 The compiler can be invoked in 3 ways:
   1) `> comp [file]` where 'file' is entered WITHOUT the extension.  
-  2) `> comp < [file]` where 'file' is the entered WITH the extension.  
+  2) `> comp < [file]` where 'file' is entered WITH the extension.  
   3) `> comp` which will read input from the keyboard until EOF is simulated.  
      To simulate EOF, press enter and then Ctrl-D (on Mac/Linux) or Ctrl-Z (on Windows).  
      
